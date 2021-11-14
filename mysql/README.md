@@ -8,7 +8,7 @@
 - [x] set go_web_mysql database
   - [x] create a database
   - [x] create a table album
-- [ ] connect a database use go-sql-driver/mysql
+- [x] connect a database use go-sql-driver/mysql
 - [ ] database curd
   - [ ] query multi rows
   - [ ] query a row
