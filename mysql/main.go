@@ -24,7 +24,14 @@ func viperConfigVariable(key string) string {
 	return value
 }
 func main() {
-
+	host := viperConfigVariable("DB.HOST")
+	port := viperConfigVariable("DB.PORT")
+	user := viperConfigVariable("DB.USER")
+	password := viperConfigVariable("DB.PASSWORD")
 	name := viperConfigVariable("DB.NAME")
-	fmt.Println(name)
+	fmt.Printf("host: " + host + "\n" +
+		"port: " + port + "\n" +
+		"user: " + user + "\n" +
+		"password: " + password + "\n" +
+		"name: " + name + "\n")
 }
