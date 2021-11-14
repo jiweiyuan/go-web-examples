@@ -9,7 +9,7 @@ import (
 
 func main()  {
 	indexFunc := func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "You are requeset in Path: %s", r.URL.Path)
+		fmt.Fprintf(w, "You are request in Path: %s", r.URL.Path)
 	}
 	helloFunc := func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "Hello World!")
