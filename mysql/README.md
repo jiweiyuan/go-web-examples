@@ -9,12 +9,12 @@
   - [x] create a database
   - [x] create a table album
 - [x] connect a database use go-sql-driver/mysql
-- [ ] database curd
+- [x] database curd
   - [x] query multi rows
   - [x] query a row
   - [x] insert 
-  - [ ] update
-  - [ ] delete
+  - [x] update
+  - [x] delete
 
 # Reference
 
