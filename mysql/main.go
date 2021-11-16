@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"github.com/go-sql-driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
@@ -38,6 +39,23 @@ type Album struct {
 
 func ListAlbumsByArtist(artist string) ([]Album, error) {
 	var albums []Album
+
+	rows, err := db.Query("SELECT id, artist, title, price FROM album WHERE artist = ?", artist)
+	if err != nil {
+		return nil, fmt.Errorf("ListAlbumsByArtist %q: %v", artist, err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var album Album
+		if err := rows.Scan(&album.ID, &album.Artist, &album.Title, &album.Price); err != nil {
+			return nil, fmt.Errorf("ListAlbumsByArtist %q: %v", artist, err)
+		}
+		albums = append(albums, album)
+	}
+	if rows.Err() != nil {
+		return nil, fmt.Errorf("ListAlbumsByArtist %q: %v", artist, err)
+	}
 	return albums, nil
 }
 
@@ -90,5 +108,12 @@ func main() {
 	}
 
 	albumOne, _ := GetAlbumById(2)
-	fmt.Printf("Get album of 2: %v", albumOne)
+	s, _ := json.Marshal(albumOne)
+	fmt.Printf("Get album of 2: %v\n", string(s))
+
+	albumsX, _ := ListAlbumsByArtist("徐悲鸿")
+	for i, album := range albumsX {
+		s, _ := json.Marshal(album)
+		fmt.Printf("ListAlbumsByArtist = 徐悲鸿 album %v: %v\n", i, string(s))
+	}
 }
