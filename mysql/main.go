@@ -72,7 +72,18 @@ func GetAlbumById(id int) (Album, error) {
 	return a, nil
 }
 
-func CreateAlbum(album *Album) {
+// CreateAlbum add the specified album to the database,
+// return the album ID of the new album
+func CreateAlbum(album *Album) (int64, error) {
+	result, err := db.Exec("INSERT INTO album (artist, title, price) VALUES (?, ?, ?)", album.Artist, album.Price, album.Price)
+	if err != nil {
+		return 0, fmt.Errorf("CreateAlbum: %v", err)
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, fmt.Errorf("CreateAlbum: %v", err)
+	}
+	return id, nil
 
 }
 
@@ -80,7 +91,21 @@ func UpdateAlbum(album *Album) {
 
 }
 
-func deleteAlbum(id int) {
+func DeleteAlbum(id int64)(bool, error) {
+	result, err := db.Exec("DELETE FROM album WHERE id = ?", id)
+	if err != nil {
+		return false, fmt.Errorf("DeleteAlbum: %v", err)
+	}
+	check, err := result.RowsAffected()
+	if err != nil {
+		return false, fmt.Errorf("DeleteAlbum: %v", err)
+	}
+
+	if check == 1 {
+		return true, nil
+	} else {
+		return false, fmt.Errorf("no item to delete")
+	}
 
 }
 
@@ -116,4 +141,20 @@ func main() {
 		s, _ := json.Marshal(album)
 		fmt.Printf("ListAlbumsByArtist = 徐悲鸿 album %v: %v\n", i, string(s))
 	}
+
+	albId, err := CreateAlbum(&Album{
+		Title: "The Modern Album",
+		Artist: "berries",
+		Price: 23.79,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("ID of added album:%v\n", albId)
+
+	resultNew, _ := DeleteAlbum(albId)
+	fmt.Printf("DeleteAlbum: %v\n", resultNew)
+	result100, _ := DeleteAlbum(100)
+	fmt.Printf("DeleteAlbum: %v\n", result100)
+
 }

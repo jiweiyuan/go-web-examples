@@ -12,7 +12,7 @@
 - [ ] database curd
   - [x] query multi rows
   - [x] query a row
-  - [ ] insert 
+  - [x] insert 
   - [ ] update
   - [ ] delete
 
