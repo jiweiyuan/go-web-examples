@@ -84,11 +84,22 @@ func CreateAlbum(album *Album) (int64, error) {
 		return 0, fmt.Errorf("CreateAlbum: %v", err)
 	}
 	return id, nil
-
 }
 
-func UpdateAlbum(album *Album) {
-
+func UpdateAlbum(album *Album) (bool, error){
+	result, err := db.Exec("UPDATE album SET artist = ?, title = ?, price = ? WHERE id = ?",album.Artist, album.Title, album.Price, album.ID)
+	if err != nil {
+		return false, fmt.Errorf("UpdateAlbum: %v", err)
+	}
+	check, err := result.RowsAffected()
+	if err != nil {
+		return false, fmt.Errorf("UpdateAlbum: %v", err)
+	}
+	if check == 1 {
+		return true, nil
+	} else {
+		return false, fmt.Errorf("no item to update")
+	}
 }
 
 func DeleteAlbum(id int64)(bool, error) {
@@ -152,9 +163,20 @@ func main() {
 	}
 	fmt.Printf("ID of added album:%v\n", albId)
 
+	resultUpdate, _ := UpdateAlbum(&Album{
+		Title:  "The Modern Album 124",
+		Artist: "berries",
+		Price:  23.79,
+		ID: int(albId),
+	})
+
+	albumUpdated, _ := GetAlbumById(int(albId))
+	s, _ = json.Marshal(albumUpdated)
+	fmt.Printf("Get album of albumUpdated: %v\n", string(s))
+
+	fmt.Printf("DeleteAlbum: %v\n", resultUpdate)
 	resultNew, _ := DeleteAlbum(albId)
 	fmt.Printf("DeleteAlbum: %v\n", resultNew)
 	result100, _ := DeleteAlbum(100)
 	fmt.Printf("DeleteAlbum: %v\n", result100)
-
 }
